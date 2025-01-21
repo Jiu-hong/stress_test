@@ -56,7 +56,7 @@ def _main():
         # Start the load operations and mark each future with its URL
 
         transfer = {executor.submit(
-            myfunc, running_ec2s, x): x for x in range(1000)}
+            myfunc, running_ec2s, x): x for x in range(COUNT)}
         for future in concurrent.futures.as_completed(transfer):
             url = transfer[future]
             try:

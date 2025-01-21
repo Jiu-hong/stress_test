@@ -27,7 +27,9 @@ def list_running_ec2():
             public_ip = member["Instances"][0]["PublicIpAddress"]
             for tags in member["Instances"][0]["Tags"]:
                 if tags["Key"] == "Name":
-                    instance_name = tags["Value"]
-                    ec2_list[instance_name] = public_ip
+                    # exclude stest-test-jh-0
+                    if tags["Value"] != "casper-stest-test-jh-0":
+                        instance_name = tags["Value"]
+                        ec2_list[instance_name] = public_ip
 
     return ec2_list
