@@ -3,6 +3,7 @@ import concurrent.futures
 from list_ec2 import list_running_ec2
 from random import randrange
 from create_acount import create_target_account
+from datetime import datetime
 
 COUNT = 10000
 
@@ -39,7 +40,7 @@ def construct_command_send_large_file(node_ip):
         ["./casper-client", "put-transaction", "session",
             "--chain-name", "casper-test-jh",
             "-n", f"http://{node_ip}:7777/rpc",
-            "--transaction-path", "/home/ubuntu/my_large_file_3M",
+            "--transaction-path", "/home/ubuntu/my_large_file_5M",
             "--secret-key", "faucet_secret_key.pem",
             "--payment-amount", "500000000000",
             "--gas-price-tolerance", "2",
@@ -50,9 +51,10 @@ def construct_command_send_large_file(node_ip):
 
 
 def _main():
+    print(f"start time: {datetime.now(tz=None)}")
     running_ec2s = get_ec2s()
     # creating process to deploy transfer
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         # Start the load operations and mark each future with its URL
 
         transfer = {executor.submit(
