@@ -5,35 +5,6 @@ import argparse
 
 COUNT = 10
 
-
-def start_sidecar(index,node_ip_address):
-
-    env = {'RUST_LOG': 'debug'}
-
-    port = create_tomls(index, node_ip_address)
-    print(f"started at port {port}====")
-
-    start_command = ["/opt/casper-sidecar/casper-sidecar", "-p",
-                     f"config-sidecar-{index}.toml"]
-    process = subprocess.Popen(
-        start_command,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        encoding='utf-8',
-        errors='replace', env=env
-    )
-
-    while True:
-        realtime_output = process.stdout.readline()
-
-        if realtime_output == '' and process.poll() is not None:
-            break
-
-        if realtime_output:
-            print(realtime_output.strip(), flush=True)
-            open(f"sidecar{index}_log.txt", "a").write(realtime_output.strip())
-
-
 def create_tomls(index,node_ip_address):
     # Load a TOML file
     with open('config-sidecar-original.toml', 'r') as f:
