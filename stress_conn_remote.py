@@ -13,7 +13,7 @@ def start_sidecar(index,node_ip_address):
     port = create_tomls(index, node_ip_address)
     print(f"started at port {port}====")
 
-    start_command = ["./casper-sidecar", "-p",
+    start_command = ["/opt/casper-sidecar/casper-sidecar", "-p",
                      f"config-sidecar-{index}.toml"]
     process = subprocess.Popen(
         start_command,
