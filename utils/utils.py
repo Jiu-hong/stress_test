@@ -1,6 +1,8 @@
-import boto3
-import os
+import boto3,os,re
 
+def get_ec2s():
+    running_ec2s = list(list_running_ec2().items())
+    return running_ec2s
 
 def list_running_ec2():
     ec2_list = {}
@@ -28,7 +30,8 @@ def list_running_ec2():
             for tags in member["Instances"][0]["Tags"]:
                 if tags["Key"] == "Name":
                     # exclude stest-test-jh-0
-                    if tags["Value"] != "casper-stest-test-jh-0":
+                    # if tags["Value"] != "casper-stest-test-jh-0":
+                    if not re.match(r'^casper-stest-test-jh*', tags["Value"]):
                         instance_name = tags["Value"]
                         ec2_list[instance_name] = public_ip
 

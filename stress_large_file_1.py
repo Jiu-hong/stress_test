@@ -8,24 +8,22 @@ from datetime import datetime
 COUNT = 10000
 
 
-def get_ec2s():
-    running_ec2s = list(list_running_ec2().items())
-    return running_ec2s
-
+# send large files to local sidecars
 
 def choose_node(running_ec2s):
     chosen_node = randrange(len(running_ec2s))
     print("chosen node - ", running_ec2s[chosen_node])
-    return running_ec2s[chosen_node][1]
+    return running_ec2s[chosen_node]
 
 
 def myfunc(running_ec2s, x):
     try:
         # choose random ip
         node_ip = choose_node(running_ec2s)
+        print(node_ip)
         # transfer to target
         send_large_file_command = construct_command_send_large_file(
-            node_ip)[0]
+            node_ip)
         result = subprocess.run(send_large_file_command,
                                 capture_output=True)
         print(result.returncode)
@@ -39,7 +37,7 @@ def construct_command_send_large_file(node_ip):
     args_list = \
         ["./casper-client", "put-transaction", "session",
             "--chain-name", "casper-test-jh-1",
-            "-n", f"http://{node_ip}:7777/rpc",
+            "-n", f"http://{node_ip}/rpc",
             "--transaction-path", "/home/ubuntu/my_large_file_3M",
             "--secret-key", "faucet_secret_key.pem",
             "--payment-amount", "500000000000",
@@ -47,12 +45,13 @@ def construct_command_send_large_file(node_ip):
             # "--install-upgrade",
             "--standard-payment", "true",
             "--pricing-mode", "classic"],
-    return args_list
+    return args_list[0]
 
 
 def _main():
     print(f"start time: {datetime.now(tz=None)}")
-    running_ec2s = get_ec2s()
+    running_ec2s = ["localhost:7100","localhost:7101","localhost:7102","localhost:7103",
+                    "localhost:7104","localhost:7105","localhost:7106"]
     # creating process to deploy transfer
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         # Start the load operations and mark each future with its URL
@@ -65,7 +64,7 @@ def _main():
                 data = future.result()
             except Exception as exc:
                 print('%r generated an exception: %s' % (url, exc))
-
-
+                
+    print(f"stop time: {datetime.now(tz=None)}")
 if __name__ == "__main__":
     _main()
