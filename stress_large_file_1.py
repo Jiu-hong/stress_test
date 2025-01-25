@@ -38,7 +38,7 @@ def construct_command_send_large_file(node_ip):
         ["./casper-client", "put-transaction", "session",
             "--chain-name", "casper-test-jh-1",
             "-n", f"http://{node_ip}/rpc",
-            "--transaction-path", "/home/ubuntu/my_large_file_3M",
+            "--transaction-path", "/home/ubuntu/my_large_file_5M",
             "--secret-key", "faucet_secret_key.pem",
             "--payment-amount", "500000000000",
             "--gas-price-tolerance", "2",
